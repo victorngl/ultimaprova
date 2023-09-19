@@ -1,5 +1,10 @@
 const XLSX = require('xlsx');
 
+
+const AnoLetivo = '2023';
+const Turma = '501';
+const fileName = 'mapao.xlsx'
+const fileName2 = 'mapao (2).xlsx'
 // Função para calcular a média aritmética de um conjunto de notas
 function noteNeedToPass(nota1, nota2) {
     const noteNeed = (42.0 - nota1 - (nota2 * 2)) / 3
@@ -12,8 +17,8 @@ function noteSumWithWeights(nota1, nota2) {
 }
 
 // Carregar as planilhas de entrada
-const planilha1 = XLSX.readFile('mapao.xlsx');
-const planilha2 = XLSX.readFile('mapao (2).xlsx');
+const planilha1 = XLSX.readFile(fileName);
+const planilha2 = XLSX.readFile(fileName2);
 
 // Inicializar a planilha de saída
 const planilhaCombinada = XLSX.utils.book_new();
@@ -33,7 +38,18 @@ for (const planilha of [planilha1, planilha2]) {
     }
 }
 
-function headerNames(novaSheet, tableOrigin) {
+function headerNames(novaSheet, tableOrigin, disciplinaName) {
+    novaSheet['A1'] = {v: 'Escola Modelar Cambaúba', t: 's' };
+    novaSheet['A2'] = {v: 'Última prova detalhado', t: 's' };
+    novaSheet['A3'] = {v: 'Ano Letivo: ' + AnoLetivo, t: 's' };
+    novaSheet['B3'] = {v: 'Turma:', t: 's' };
+    novaSheet['C3'] = {v:  Turma, t: 's' };
+    novaSheet['D3'] = {v:  'Disciplina:', t: 's' };
+    novaSheet['E3'] = {v:  disciplinaName, t: 's' };
+    novaSheet['A4'] = {v:  'A = (1º TRI * 1) + (2º TRI * 2)', t: 's' };
+    novaSheet['D4'] = {v:  'B = Nota necessária para passar direto no 3º TRI', t: 's' };
+    novaSheet['A5'] = {v:  'C = A + (3º TRI * 3)', t: 's' };
+    novaSheet['D5'] = {v:  'D = Nota necessária para passar na prova final', t: 's' };
 
     novaSheet['A' + tableOrigin] = { v: 'Nome do Aluno', t: 's' };
     novaSheet['B' + tableOrigin] = { v: '1º TRI', t: 's' };
@@ -64,16 +80,14 @@ for (const disciplina of disciplinas) {
     // Filtrar apenas as notas da disciplina atual
 
 
-
-
     // Criar uma nova planilha para a disciplina
     const novaPlanilha = XLSX.utils.book_new();
 
     let novaSheet = XLSX.utils.aoa_to_sheet([[]]);;
 
-    let tableOrigin = 5
+    let tableOrigin = 6
 
-    novaSheet = headerNames(novaSheet, tableOrigin)
+    novaSheet = headerNames(novaSheet, tableOrigin, disciplina)
 
     // Inserir os nomes dos alunos na primeira coluna
     for (let i = 1; i < data1.length; i++) {
@@ -106,27 +120,32 @@ for (const disciplina of disciplinas) {
 
     var wscols = [
         { wch: 40 }, // A
-        { wch: 12 }, // B
-        { wch: 12 }, // C
-        { wch: 12 }, // D
-        { wch: 12 }, // E
+        { wch: 10 }, // B
+        { wch: 10 }, // C
+        { wch: 10 }, // D
+        { wch: 10 }, // E
+        { wch: 10 }, // F
+        { wch: 10 }, // G
+        { wch: 10 }, // H
+        { wch: 12 }, // I
         { wch: 12 }, // F
     ];
 
-    /*
+    
     const merge = [
-        { s: { r: 0, c: 0 }, e: { r: 0, c: 1 } },
-        { s: { r: 1, c: 0 }, e: { r: 1, c: 1 } },
-        { s: { r: 2, c: 0 }, e: { r: 2, c: 1 } },
+        { s: { r: 0, c: 0 }, e: { r: 0, c: 9 } },
+        { s: { r: 1, c: 0 }, e: { r: 1, c: 9 } },
+        { s: { r: 3, c: 0 }, e: { r: 3, c: 1 } },
+        { s: { r: 3, c: 3 }, e: { r: 3, c: 6 } },
+        { s: { r: 4, c: 0 }, e: { r: 4, c: 1 } },
+        { s: { r: 4, c: 3 }, e: { r: 4, c: 6 } },
     ];
 
-    ws["!merges"] = merge;
-    */
+    novaSheet["!merges"] = merge;
 
     novaSheet['!cols'] = wscols;
 
     novaSheet['!ref'] = 'A1:Z99'
-
 
     // Adicionar a nova planilha à planilha de saída com o nome da disciplina
     XLSX.utils.book_append_sheet(planilhaCombinada, novaSheet, disciplina);
