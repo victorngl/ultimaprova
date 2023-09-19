@@ -53,7 +53,21 @@ for (const disciplina of disciplinas) {
     // Criar uma nova planilha para a disciplina
     const novaPlanilha = XLSX.utils.book_new();
 
-    const novaSheet = XLSX.utils.aoa_to_sheet([['Nome', disciplina]]);;
+    const novaSheet = XLSX.utils.aoa_to_sheet([[]]);;
+    
+    let tableOrigin = 5
+
+
+    novaSheet['A' + tableOrigin] = { v: 'Nome do Aluno', t: 's' };
+    novaSheet['B' + tableOrigin] = { v: '1º TRI',   t: 's' };
+    novaSheet['C' + tableOrigin] = { v: '2º TRI',   t: 's' };
+    novaSheet['D' + tableOrigin] = { v: 'A',   t: 's' };
+    novaSheet['E' + tableOrigin] = { v: 'B',   t: 's' };
+    novaSheet['F' + tableOrigin] = { v: '3º TRI',   t: 's' };
+    novaSheet['G' + tableOrigin] = { v: 'C',   t: 's' };
+    novaSheet['H' + tableOrigin] = { v: 'D',   t: 's' };
+    novaSheet['I' + tableOrigin] = { v: 'Prova Final',   t: 's' };
+    novaSheet['J' + tableOrigin] = { v: 'Média Final',   t: 's' };
 
     // Inserir os nomes dos alunos na primeira coluna
     for (let i = 1; i < data1.length; i++) {
@@ -62,10 +76,10 @@ for (const disciplina of disciplinas) {
             break;
 
         if (data1[i][1] === data2[i][1]) {
-            novaSheet['A' + (i + 1)] = { v: data1[i][1], t: 's' };
+            novaSheet['A' + (i + tableOrigin)] = { v: data1[i][1], t: 's' };
         }
         else {
-            novaSheet['A' + (i + 1)] = { v: 'Valores diferentes nas duas planilhas', t: 's' };
+            novaSheet['A' + (i + tableOrigin)] = { v: 'Valores diferentes nas duas planilhas', t: 's' };
         }
 
         if (i == 0)
@@ -77,10 +91,10 @@ for (const disciplina of disciplinas) {
         const needToPass = noteNeedToPass(nota1, nota2)
         const noteSum = noteSumWithWeights(nota1, nota2);
 
-        novaSheet['B' + (i + 1)] = { v: data1[i][indexOfDiscipline1], t: 's' };
-        novaSheet['C' + (i + 1)] = { v: data2[i][indexOfDiscipline1], t: 's' };
-        novaSheet['D' + (i + 1)] = { v: noteSum.toFixed(1), t: 's' };
-        novaSheet['E' + (i + 1)] = { v: needToPass.toFixed(1), t: 's' };
+        novaSheet['B' + (i + tableOrigin)] = { v: data1[i][indexOfDiscipline1], t: 's' };
+        novaSheet['C' + (i + tableOrigin)] = { v: data2[i][indexOfDiscipline1], t: 's' };
+        novaSheet['D' + (i + tableOrigin)] = { v: noteSum.toFixed(1), t: 's' };
+        novaSheet['E' + (i + tableOrigin)] = { v: needToPass.toFixed(1), t: 's' };
 
     }
 
