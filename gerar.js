@@ -33,6 +33,22 @@ for (const planilha of [planilha1, planilha2]) {
     }
 }
 
+function headerNames(novaSheet, tableOrigin) {
+
+    novaSheet['A' + tableOrigin] = { v: 'Nome do Aluno', t: 's' };
+    novaSheet['B' + tableOrigin] = { v: '1º TRI', t: 's' };
+    novaSheet['C' + tableOrigin] = { v: '2º TRI', t: 's' };
+    novaSheet['D' + tableOrigin] = { v: 'A', t: 's' };
+    novaSheet['E' + tableOrigin] = { v: 'B', t: 's' };
+    novaSheet['F' + tableOrigin] = { v: '3º TRI', t: 's' };
+    novaSheet['G' + tableOrigin] = { v: 'C', t: 's' };
+    novaSheet['H' + tableOrigin] = { v: 'D', t: 's' };
+    novaSheet['I' + tableOrigin] = { v: 'Prova Final', t: 's' };
+    novaSheet['J' + tableOrigin] = { v: 'Média Final', t: 's' };
+
+    return novaSheet
+}
+
 // Para cada disciplina, criar uma aba e inserir os nomes dos alunos e as notas correspondentes
 for (const disciplina of disciplinas) {
     const sheet1 = planilha1.Sheets[planilha1.SheetNames[0]];
@@ -53,21 +69,11 @@ for (const disciplina of disciplinas) {
     // Criar uma nova planilha para a disciplina
     const novaPlanilha = XLSX.utils.book_new();
 
-    const novaSheet = XLSX.utils.aoa_to_sheet([[]]);;
-    
+    let novaSheet = XLSX.utils.aoa_to_sheet([[]]);;
+
     let tableOrigin = 5
 
-
-    novaSheet['A' + tableOrigin] = { v: 'Nome do Aluno', t: 's' };
-    novaSheet['B' + tableOrigin] = { v: '1º TRI',   t: 's' };
-    novaSheet['C' + tableOrigin] = { v: '2º TRI',   t: 's' };
-    novaSheet['D' + tableOrigin] = { v: 'A',   t: 's' };
-    novaSheet['E' + tableOrigin] = { v: 'B',   t: 's' };
-    novaSheet['F' + tableOrigin] = { v: '3º TRI',   t: 's' };
-    novaSheet['G' + tableOrigin] = { v: 'C',   t: 's' };
-    novaSheet['H' + tableOrigin] = { v: 'D',   t: 's' };
-    novaSheet['I' + tableOrigin] = { v: 'Prova Final',   t: 's' };
-    novaSheet['J' + tableOrigin] = { v: 'Média Final',   t: 's' };
+    novaSheet = headerNames(novaSheet, tableOrigin)
 
     // Inserir os nomes dos alunos na primeira coluna
     for (let i = 1; i < data1.length; i++) {
@@ -98,6 +104,26 @@ for (const disciplina of disciplinas) {
 
     }
 
+    var wscols = [
+        { wch: 40 }, // A
+        { wch: 12 }, // B
+        { wch: 12 }, // C
+        { wch: 12 }, // D
+        { wch: 12 }, // E
+        { wch: 12 }, // F
+    ];
+
+    /*
+    const merge = [
+        { s: { r: 0, c: 0 }, e: { r: 0, c: 1 } },
+        { s: { r: 1, c: 0 }, e: { r: 1, c: 1 } },
+        { s: { r: 2, c: 0 }, e: { r: 2, c: 1 } },
+    ];
+
+    ws["!merges"] = merge;
+    */
+
+    novaSheet['!cols'] = wscols;
 
     novaSheet['!ref'] = 'A1:Z99'
 
