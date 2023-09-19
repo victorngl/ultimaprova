@@ -1,14 +1,14 @@
 const XLSX = require('xlsx');
 
 // Função para calcular a média aritmética de um conjunto de notas
-function calcularMedia(notas1, notas2) {
-    const media = [];
-    for (let i = 0; i < notas1.length; i++) {
-        const nota1 = parseFloat(notas1[i]) || 0;
-        const nota2 = parseFloat(notas2[i]) || 0;
-        media.push((nota1 + nota2) / 2);
-    }
-    return media;
+function noteNeedToPass(nota1, nota2) {
+    const noteNeed = (42.0 - nota1 - (nota2 * 2)) / 3
+    return noteNeed;
+}
+
+function noteSumWithWeights(nota1, nota2) {
+    const noteSum = nota1 + (nota2 * 2)
+    return noteSum
 }
 
 // Carregar as planilhas de entrada
@@ -46,34 +46,47 @@ for (const disciplina of disciplinas) {
     console.log(data1[0][indexOfDiscipline1]);
 
     // Filtrar apenas as notas da disciplina atual
-    
 
-    
+
+
 
     // Criar uma nova planilha para a disciplina
     const novaPlanilha = XLSX.utils.book_new();
-   
+
     const novaSheet = XLSX.utils.aoa_to_sheet([['Nome', disciplina]]);;
 
     // Inserir os nomes dos alunos na primeira coluna
     for (let i = 1; i < data1.length; i++) {
 
-        if(data1[i][1] === 'Média:')
+        if (data1[i][1] === 'Média:')
             break;
 
-        novaSheet['A' + (i + 1)] = { v: data1[i][1], t: 's'};
+        if (data1[i][1] === data2[i][1]) {
+            novaSheet['A' + (i + 1)] = { v: data1[i][1], t: 's' };
+        }
+        else {
+            novaSheet['A' + (i + 1)] = { v: 'Valores diferentes nas duas planilhas', t: 's' };
+        }
 
-        if(i == 0)
+        if (i == 0)
             continue;
 
-        novaSheet['B' + (i + 1)] = { v: data1[i][indexOfDiscipline1], t: 's'};
-        novaSheet['C' + (i + 1)] = { v: data2[i][indexOfDiscipline1], t: 's'};
+        const nota1 = parseFloat(data1[i][indexOfDiscipline1])
+        const nota2 = parseFloat(data2[i][indexOfDiscipline1])
+
+        const needToPass = noteNeedToPass(nota1, nota2)
+        const noteSum = noteSumWithWeights(nota1, nota2);
+
+        novaSheet['B' + (i + 1)] = { v: data1[i][indexOfDiscipline1], t: 's' };
+        novaSheet['C' + (i + 1)] = { v: data2[i][indexOfDiscipline1], t: 's' };
+        novaSheet['D' + (i + 1)] = { v: noteSum.toFixed(1), t: 's' };
+        novaSheet['E' + (i + 1)] = { v: needToPass.toFixed(1), t: 's' };
 
     }
 
 
     novaSheet['!ref'] = 'A1:Z99'
-    
+
 
     // Adicionar a nova planilha à planilha de saída com o nome da disciplina
     XLSX.utils.book_append_sheet(planilhaCombinada, novaSheet, disciplina);
